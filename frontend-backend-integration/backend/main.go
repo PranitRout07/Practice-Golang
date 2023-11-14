@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
@@ -14,54 +16,70 @@ import (
 
 func main() {
 	stripe.Key = "sk_test_51OBdmnSBYMn4HDSRhQf13fFGrat7wiQoplJOWpVpS6tLZBqxBg5FUGbxwUQs03weXZYJ5192QqbYICSKkFkhIAc200LEv3pM5L"
-	http.HandleFunc("/create-payment-intent",handleCreatePaymentIntent)
-	http.HandleFunc("/health",handleHealth)
+	http.HandleFunc("/create-payment-intent", handleCreatePaymentIntent)
+	http.HandleFunc("/health", handleHealth)
 	fmt.Println("Listening at localhost:4242...")
-	var err error = http.ListenAndServe("localhost:4242",nil)
-	if err!=nil{
+	var err error = http.ListenAndServe("localhost:4242", nil)
+	if err != nil {
 		log.Fatal(err)
 	}
 }
-func handleCreatePaymentIntent(w http.ResponseWriter,r *http.Request){
-	if r.Method != "POST"{
-		http.Error(w,http.StatusText(http.StatusMethodNotAllowed),http.StatusMethodNotAllowed)
+func handleCreatePaymentIntent(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
 	var req struct {
 		ProductId string `json:"product_id"`
 		FirstName string `json:"first_name"`
-		LastName string `json:"last_name"`
-		Address1 string `json:"address1"`
-		Address2 string `json:"address2"`
-		City string `json:"city"`
-		State string `json:"state"`
-		Zip string `json:"zip"`
-		Country string `json:"country"`
+		LastName  string `json:"last_name"`
+		Address1  string `json:"address1"`
+		Address2  string `json:"address2"`
+		City      string `json:"city"`
+		State     string `json:"state"`
+		Zip       string `json:"zip"`
+		Country   string `json:"country"`
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&req)
-	if err!=nil{
-		http.Error(w,err.Error(),http.StatusInternalServerError)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	params := &stripe.PaymentIntentParams{
-		Amount:stripe.Int64(calculateOrderAmount(req.ProductId)),
-		Currency:stripe.String(string(stripe.CurrencyUSD)),
+		Amount:   stripe.Int64(calculateOrderAmount(req.ProductId)),
+		Currency: stripe.String(string(stripe.CurrencyUSD)),
 		AutomaticPaymentMethods: &stripe.PaymentIntentAutomaticPaymentMethodsParams{
 			Enabled: stripe.Bool(true),
 		},
 	}
 
-	paymentIntent,err := paymentintent.New(params)
-	if err!=nil{
-		http.Error(w,err.Error(),http.StatusInternalServerError)
+	paymentIntent, err := paymentintent.New(params)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	fmt.Println(paymentIntent.ClientSecret)
+	// fmt.Println(paymentIntent.ClientSecret)
+	var response struct {
+		ClientSecret string `json:"clientSecret"`
+	}
+	response.ClientSecret = paymentIntent.ClientSecret
+	var buf bytes.Buffer
+
+	err = json.NewEncoder(&buf).Encode(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json")
+
+	_, err = io.Copy(w, &buf)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
-func handleHealth(w http.ResponseWriter,r *http.Request){   //writing in the response and returning it to response
+func handleHealth(w http.ResponseWriter, r *http.Request) { //writing in the response and returning it to response
 	fmt.Println("health is ok")
 }
-func calculateOrderAmount(productId string) int64{
+func calculateOrderAmount(productId string) int64 {
 	switch productId {
 	case "Forever Pants":
 		return 2300
