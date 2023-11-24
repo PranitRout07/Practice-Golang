@@ -9,6 +9,7 @@ type JSONTextResponse struct{
 	Message string
 }
 func main() {
+	
 	fmt.Println("hello")
 	app := fiber.New()
 
@@ -21,5 +22,6 @@ func main() {
 
 }
 func returnEntities(c *fiber.Ctx) error{
-	return c.SendString("Message from entity path!!")
+	return c.JSON(JSONTextResponse{Message: "Message from entity path!!"})
+	// return c.SendString("Message from entity path!!")
 }
