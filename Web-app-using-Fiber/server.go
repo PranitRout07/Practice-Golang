@@ -16,6 +16,10 @@ func main() {
 		// return c.SendString("Hello!!!")
 		return c.JSON(JSONTextResponse{Message: "Hello,whats up"})
 	})
+	app.Get("/entities",returnEntities)
 	app.Listen(":8080")
 
+}
+func returnEntities(c *fiber.Ctx) error{
+	return c.SendString("Message from entity path!!")
 }
