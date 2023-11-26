@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"unsafe"
 )
 
 type Book struct {
@@ -53,4 +54,29 @@ func main() {
 	b := &book
 	SaveBook4(b)
 
+	structOptimisation()
+}
+
+func structOptimisation(){
+	type unOptimized struct{
+		A bool
+		B float64
+		C int32
+	}
+	a := unOptimized{}
+	fmt.Println("Alignment of bool",unsafe.Alignof(bool(true)))
+	fmt.Println("Alignment of float64",unsafe.Alignof(float64(0.0)))
+	fmt.Println("Alignment of int32",unsafe.Alignof(int32(0)))
+	fmt.Println("Alignment of struct",unsafe.Alignof(a))
+	
+
+
+	type Optimized struct{
+		B float64
+		C int32
+		A bool
+	}
+	b := Optimized{}
+	fmt.Println("Size of struct before optimization",unsafe.Sizeof(a))
+	fmt.Println("Size of struct after optimization",unsafe.Sizeof(b))
 }
