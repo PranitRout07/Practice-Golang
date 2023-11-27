@@ -18,10 +18,15 @@ func main() {
 		return c.JSON(JSONTextResponse{Message: "Hello,whats up"})
 	})
 	app.Get("/entities",returnEntities)
+	newApi := app.Group("/newapi")
+	newApi.Get("/",api)
 	app.Listen(":8080")
 
 }
 func returnEntities(c *fiber.Ctx) error{
 	return c.JSON(JSONTextResponse{Message: "Message from entity path!!"})
 	// return c.SendString("Message from entity path!!")
+}
+func api(c *fiber.Ctx) error{
+	return c.JSON(JSONTextResponse{Message: "Message from api path!!"})
 }
