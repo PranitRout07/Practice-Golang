@@ -6,10 +6,16 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"log"
 )
 
 type WeatherAPI struct {
 	API string `json:"OpenWeatherAPI"`
+}
+
+type WeatherInfo struct {
+	Main        string `json:"main"`
+	Description string `json:"description"`
 }
 
 type GetWeatherData struct {
@@ -17,7 +23,10 @@ type GetWeatherData struct {
 	Main struct {
 		Kelvin float64 `json:"temp"`
 	} `json:"main"`
+
+	Weather []WeatherInfo `json:"weather"`
 }
+
 
 func APIConfig(filename string) (WeatherAPI, error) {
 	bytes, err := os.ReadFile(filename)
@@ -73,5 +82,7 @@ func main() {
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
 			json.NewEncoder(w).Encode(data)
 		})
+	log.Println("Listening....")
 	http.ListenAndServe(":8080",nil)
+	
 }
