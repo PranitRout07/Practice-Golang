@@ -22,15 +22,15 @@ type GetWeatherData struct {
 func APIConfig(filename string) (WeatherAPI, error) {
 	bytes, err := os.ReadFile(filename)
 	if err != nil {
-		return WeatherAPI{}, os.ErrClosed
+		return WeatherAPI{}, err
 	}
 	var x WeatherAPI
 	err = json.Unmarshal(bytes, &x)
 	if err != nil {
-		return WeatherAPI{}, nil
+		return WeatherAPI{}, err
 	}
 	fmt.Printf("u: %+v\n", x)
-	return x, err
+	return x, nil
 
 }
 func hello(w http.ResponseWriter, r *http.Request) {
