@@ -6,6 +6,7 @@ require (
 	github.com/fatih/color v1.16.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/gofiber/fiber/v2 v2.51.0
+	github.com/rs/cors v1.10.1
 	github.com/spf13/cobra v1.8.0
 	github.com/stripe/stripe-go/v76 v76.4.0
 )

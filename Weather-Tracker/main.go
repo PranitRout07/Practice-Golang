@@ -1,12 +1,14 @@
 package main
 
 import (
+
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
-	"log"
+	"github.com/rs/cors"
 )
 
 type WeatherAPI struct {
@@ -54,10 +56,12 @@ func querry(city string) (GetWeatherData, error) {
 	if err != nil {
 		return GetWeatherData{}, err
 	}
-	fmt.Println("response",resp)
+	fmt.Println("response",resp.Body)
 	defer resp.Body.Close()
 	var d GetWeatherData
 	json.NewDecoder(resp.Body).Decode(&d)
+	d.Main.Kelvin = d.Main.Kelvin -273
+	d.Main.Kelvin = float64(int(d.Main.Kelvin*100)) / 100
 	if err != nil {
 		return GetWeatherData{}, err
 	}
@@ -65,14 +69,10 @@ func querry(city string) (GetWeatherData, error) {
 }
 
 func main() {
-	// filename := ".apiConfig"
-	// a, err := APIConfig(filename)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-	// fmt.Println(a.API)
-	http.HandleFunc("/hello", hello)
-	http.HandleFunc("/weather/",
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/hello", hello)
+	mux.HandleFunc("/weather/",
 		func(w http.ResponseWriter, r *http.Request) {
 			city := strings.SplitN(r.URL.Path, "/", 3)[2]
 			data, err := querry(city)
@@ -83,7 +83,10 @@ func main() {
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
 			json.NewEncoder(w).Encode(data)
 		})
+
+	// Enable CORS for all routes using cors.Default().Handler
+	handler := cors.Default().Handler(mux)
+
 	log.Println("Listening....")
-	http.ListenAndServe(":8080",nil)
-	
+	http.ListenAndServe(":8080", handler)
 }
