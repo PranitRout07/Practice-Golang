@@ -16,7 +16,7 @@ func main() {
 	t=insert(2,t)
 	t=insert(90,t)
 	t=insert(-2,t)
-	
+	t=insert(17,t)
 	traverse(t)
 
 }
