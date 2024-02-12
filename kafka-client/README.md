@@ -1,3 +1,4 @@
+###### Realtime Data Streming Using Code
 Docker Commands to run kafka : 
 
 1. First create a docker network . 
@@ -19,9 +20,8 @@ docker run -d --name kafka --network kafka-network -p 9092:9092 \
 ```kafka-topics.sh --create --topic test-topic --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092```
 <!-- This command should run inside the kafka container -->
 
-All THE STEPS ARE NOW COMPLETE.
-
-If you want to do same task without using any go code . Then basically you have to enter into the kafka container in two different terminals . Then run these commands : 
+###### Realtime Data Streming Without Using Code
+6. If you want to do same task without using any go code . Then basically you have to enter into the kafka container in two different terminals . Then run these commands : 
 
 ```kafka-topics.sh --create --topic test-topic --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092```
 
