@@ -7,6 +7,7 @@ import (
 )
 
 func TestAdd(t *testing.T) {
+	t.Parallel()
 	type testCase struct {
 		a, b float64
 		want float64
@@ -27,6 +28,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestSubtract(t *testing.T) {
+	t.Parallel()
 	type testCase struct {
 		a, b float64
 		want float64
@@ -47,6 +49,7 @@ func TestSubtract(t *testing.T) {
 }
 
 func TestMultiply(t *testing.T) {
+	t.Parallel()
 	type testCase struct {
 		a, b float64
 		want float64
@@ -64,5 +67,32 @@ func TestMultiply(t *testing.T) {
 			t.Errorf("Multiply(%f,%f) : want %f, got %f", i.a, i.b, i.want, got)
 		}
 		log.Println("Test Multiplication Successful")
+	}
+}
+
+
+func TestDivide(t *testing.T) {
+	t.Parallel()
+	type testCase struct {
+		a, b float64
+		want float64
+	}
+	TestCases := []testCase{
+		{a: 10, b: 10, want: 1},
+		{a: 5, b: 1, want: 5},
+		{a: -5, b: 5, want: -1},
+		// {a: 1 , b : 0 , want : 0},
+	}
+	for _, i := range TestCases {
+
+		got, err := calculator.Divide(i.a, i.b)
+
+		if err!=nil{
+			t.Fatalf("want no error for valid input, got %v", err)
+		}
+		if i.want != got {
+			t.Errorf("Divide(%f,%f) : want %f, got %f", i.a, i.b, i.want, got)
+		}
+		log.Println("Test Divide Successful")
 	}
 }
