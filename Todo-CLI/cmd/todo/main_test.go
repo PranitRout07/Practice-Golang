@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 )
 
@@ -32,4 +34,33 @@ func TestMain(m *testing.M) {
 	os.Remove(fileName)
 
 	os.Exit(result)
+}
+
+func TestTodoCLI(t *testing.T){
+	task := "Task-01"
+	dir , err := os.Getwd()  // gives the current directory
+	if err!=nil{
+		t.Fatal(err)
+	}
+	cmdPath := filepath.Join(dir, binName)
+	t.Run("Add new task", func (t*testing.T){
+		cmd := exec.Command(cmdPath, strings.Split(task, " ")...)
+		fmt.Println(cmd)
+		if err := cmd.Run();err!=nil{
+			t.Fatal(err)
+		}
+	})
+
+	t.Run("ListTasks", func(t *testing.T){
+		cmd := exec.Command(cmdPath)
+		output , err := cmd.CombinedOutput()
+		fmt.Println("Output: ",string(output))
+		if err!=nil{
+			t.Fatal(err)
+		}
+		expected := task + "\n"
+		if expected!=string(output){
+			t.Errorf("Expected %q got %q",expected,string(output))
+		}
+	})
 }
