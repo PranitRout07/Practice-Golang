@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strings"
+	// "strings"
 	"testing"
 )
 
@@ -42,9 +42,10 @@ func TestTodoCLI(t *testing.T){
 	if err!=nil{
 		t.Fatal(err)
 	}
+	fmt.Println(dir)
 	cmdPath := filepath.Join(dir, binName)
 	t.Run("Add new task", func (t*testing.T){
-		cmd := exec.Command(cmdPath, strings.Split(task, " ")...)
+		cmd := exec.Command(cmdPath, "-task", task)
 		fmt.Println(cmd)
 		if err := cmd.Run();err!=nil{
 			t.Fatal(err)
@@ -52,8 +53,9 @@ func TestTodoCLI(t *testing.T){
 	})
 
 	t.Run("ListTasks", func(t *testing.T){
-		cmd := exec.Command(cmdPath)
+		cmd := exec.Command(cmdPath,"-list")
 		output , err := cmd.CombinedOutput()
+		// fmt.Println("Output:",string(output))
 		fmt.Println("Output: ",string(output))
 		if err!=nil{
 			t.Fatal(err)
@@ -63,4 +65,8 @@ func TestTodoCLI(t *testing.T){
 			t.Errorf("Expected %q got %q",expected,string(output))
 		}
 	})
+	err = os.Remove("C:\\Users\\prani\\OneDrive\\Desktop\\GolangPractice\\Practice-Golang\\Todo-CLI\\cmd\\todo\\.todo.json")
+	if err!=nil{
+		t.Error("Error occured :",err)
+	}
 }
