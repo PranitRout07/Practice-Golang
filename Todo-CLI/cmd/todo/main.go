@@ -16,8 +16,10 @@ func main() {
 	//adding flags
 	//All these assigned flags are pointers . When trying to use it , it needs to deference .
 	task := flag.String("task", "", "Add a new task")
-	list := flag.Bool("list", false, "List all the tasks")
+	list := flag.Bool("list", false, "List the incomplete tasks")
 	complete := flag.Int("complete", 0, "Item to be completed")
+	delete := flag.Int("delete",0,"Delete an Item")
+	list_all := flag.Bool("list-all",false,"List all the tasks")
 	flag.Parse()
 	li := &todo.List{} //li pointing to the address of the list .
 	err := li.Get(todoFileName)
@@ -67,6 +69,21 @@ func main() {
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
+		}
+	case *delete > 0 :
+		err := li.Delete(*delete)
+		if err!=nil{
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		err = li.Save(todoFileName)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+	case *list_all:
+		for _, item := range *li {
+			fmt.Println(item.Task)
 		}
 
 	case *task != "":
