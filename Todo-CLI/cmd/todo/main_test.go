@@ -65,6 +65,20 @@ func TestTodoCLI(t *testing.T){
 			t.Errorf("Expected %q got %q",expected,string(output))
 		}
 	})
+
+	t.Run("ListAllTasks", func(t *testing.T){
+		cmd := exec.Command(cmdPath,"-list-all")
+		output , err := cmd.CombinedOutput()
+
+		fmt.Println("Output: ",string(output))
+		if err!=nil{
+			t.Fatal(err)
+		}
+		expected := task + "\n"
+		if expected!=string(output){
+			t.Errorf("Expected %q got %q",expected,string(output))
+		}
+	})
 	err = os.Remove("C:\\Users\\prani\\OneDrive\\Desktop\\GolangPractice\\Practice-Golang\\Todo-CLI\\cmd\\todo\\.todo.json")
 	if err!=nil{
 		t.Error("Error occured :",err)
