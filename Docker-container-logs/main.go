@@ -8,6 +8,7 @@ import (
 	"os"
 	containertypes "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/olekukonko/tablewriter"
 )
 
 func main() {
@@ -27,7 +28,7 @@ func main() {
 	for _, container := range containers {
 		row := []string{container.Names[0], ""}
 
-		options := container.LogsOptions{ShowStdout: true, Timestamps: true, Details: true}
+		options := containertypes.LogsOptions{ShowStdout: true, Timestamps: true, Details: true}
 		out, err := cli.ContainerLogs(ctx, container.ID, options)
 		if err != nil {
 			panic(err)
