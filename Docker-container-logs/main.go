@@ -3,7 +3,6 @@ package main
 import (
 
 	"context"
-	"fmt"
 
 	"io"
 	"os"
@@ -23,21 +22,30 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"CONTAINER NAME", "LOGS"})
 	for _, container := range containers {
-		fmt.Println("CONTAINER NAME: ", container.Names)
-		fmt.Println("------------------------------")
-		options := containertypes.LogsOptions{ShowStdout: true,Timestamps: true , Details: true}
+		row := []string{container.Names[0], ""}
+
+		options := container.LogsOptions{ShowStdout: true, Timestamps: true, Details: true}
 		out, err := cli.ContainerLogs(ctx, container.ID, options)
 		if err != nil {
 			panic(err)
 		}
 		defer out.Close()
 
-		// Copy container logs directly to standard output
-		if _, err := io.Copy(os.Stdout, out); err != nil {
+		// Read container logs
+		logs, err := io.ReadAll(out)
+		if err != nil {
 			panic(err)
 		}
 
+		row[1] = string(logs)
+
+		table.Append(row)
 	}
 
+	table.Render()
 }
+
+
