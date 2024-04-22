@@ -7,7 +7,7 @@ import (
 )
 type api struct{
 	Name string `json:"name"`
-	Email string `json:"email"`
+	Email string `json:"email" binding:"required"`
 }
 var data api 
 
@@ -40,7 +40,7 @@ func postData(c *gin.Context) {
 	err := c.BindJSON(&data)
 	if err!=nil{
 		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Something is wrong",
+			"message": err.Error(),
 		  })
 
 	}
@@ -53,7 +53,7 @@ func putData(c *gin.Context) {
 	err := c.BindJSON(&data)
 	if err!=nil{
 		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Something went wrong",
+			"message": err.Error(),
 		  })
 
 	}
