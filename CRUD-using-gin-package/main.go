@@ -18,6 +18,7 @@ func main() {
   r.POST("/post", postData)
   r.PUT("/put", putData)
   r.DELETE("/delete", deleteData)
+  r.GET("/getparams/:id/",getParams)
   r.Run(":9090") 
 }
 
@@ -25,6 +26,14 @@ func getData(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
       "message": data,
     })
+}
+
+func getParams(c *gin.Context) {
+  id := c.Param("id")
+  c.JSON(http.StatusOK, gin.H{
+    "user_id":id,
+    "message": data,
+  })
 }
 
 func postData(c *gin.Context) {
