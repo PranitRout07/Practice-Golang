@@ -7,6 +7,8 @@ import (
 
 func main() {
 	r := gin.Default()
-	controllers.Initialize(r)
+
+	controller := &controllers.Api{}
+	controller.Initialize(r)
 
 }
