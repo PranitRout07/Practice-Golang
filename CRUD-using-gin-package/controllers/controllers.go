@@ -10,7 +10,6 @@ type Api struct{
 	svc_data services.Svc
 }
 
-var data Api 
 
 func (t *Api)Initialize(r *gin.Engine){
 	r.GET("/get", t.getData)
@@ -26,7 +25,7 @@ func (t *Api)Initialize(r *gin.Engine){
 
 func (t *Api) getData(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"message": data.svc_data,
+		"message": t.svc_data.GetDataService(t.svc_data),
 	})
 }
 
@@ -34,12 +33,12 @@ func (t *Api) getParams(c *gin.Context) {
 	id := c.Param("id")
 	c.JSON(http.StatusOK, gin.H{
 		"user_id": id,
-		"message": data.svc_data,
+		"message": &t.svc_data,
 	})
 }
 
 func (t *Api)postData(c *gin.Context) {
-	err := c.BindJSON(&data.svc_data)
+	err := c.BindJSON(&t.svc_data)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": err.Error(),
@@ -47,12 +46,12 @@ func (t *Api)postData(c *gin.Context) {
 
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": data.svc_data,
+		"message": t.svc_data.PostDataService(t.svc_data),
 	})
 }
 
 func (t *Api) putData(c *gin.Context) {
-	err := c.BindJSON(&data.svc_data)
+	err := c.BindJSON(&t.svc_data)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": err.Error(),
@@ -60,13 +59,13 @@ func (t *Api) putData(c *gin.Context) {
 
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": data.svc_data,
+		"message": t.svc_data,
 	})
 }
 
 func (t *Api) deleteData(c *gin.Context) {
-	data = Api{}
+	t.svc_data.DeleteDataService(t.svc_data)
 	c.JSON(http.StatusOK, gin.H{
-		"message": data.svc_data,
+		"message": t.svc_data,
 	})
 }
