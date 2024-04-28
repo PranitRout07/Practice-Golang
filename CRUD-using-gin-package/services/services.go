@@ -16,7 +16,7 @@ func (s *Svc) PostDataService(data Svc) Svc{
 }
 
 func (s *Svc) DeleteDataService(data Svc) Svc{
-	data = Svc{}
+
 	return data
 
 }

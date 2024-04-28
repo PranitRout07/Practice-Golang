@@ -7,8 +7,10 @@ import (
 
 func main() {
 	r := gin.Default()
-
+	
 	controller := &controllers.Api{}
 	controller.Initialize(r)
+
+	r.Run(":9090")
 
 }
