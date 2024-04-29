@@ -8,7 +8,8 @@ import (
 )
 
 type Api struct {
-	svc_data services.Svc
+	svc_data services.DataService
+	data services.Svc
 }
 
 
@@ -23,7 +24,7 @@ func (t *Api) Initialize(r *gin.Engine) {
 
 func (t *Api) getData(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"message": t.svc_data.GetDataService(t.svc_data),
+		"message": t.svc_data.GetDataService(t.svc_data.GetDataService(t.data)),
 	})
 }
 
@@ -31,7 +32,7 @@ func (t *Api) getParams(c *gin.Context) {
 	id := c.Param("id")
 	c.JSON(http.StatusOK, gin.H{
 		"user_id": id,
-		"message": &t.svc_data,
+		"message": t.data,
 	})
 }
 
@@ -44,12 +45,12 @@ func (t *Api) postData(c *gin.Context) {
 
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": t.svc_data.PostDataService(t.svc_data),
+		"message": t.svc_data.PostDataService(t.data),
 	})
 }
 
 func (t *Api) putData(c *gin.Context) {
-	err := c.BindJSON(&t.svc_data)
+	err := c.BindJSON(t.data)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": err.Error(),
@@ -62,9 +63,9 @@ func (t *Api) putData(c *gin.Context) {
 }
 
 func (t *Api) deleteData(c *gin.Context) {
-	t.svc_data =services.Svc{}
+	t.data =services.Svc{}
 	
 	c.JSON(http.StatusOK, gin.H{
-		"message": t.svc_data.DeleteDataService(t.svc_data),
+		"message": t.svc_data.DeleteDataService(t.data),
 	})
 }

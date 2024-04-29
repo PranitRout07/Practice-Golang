@@ -1,5 +1,8 @@
 package services
 
+
+type DataService struct{}
+
 type Svc struct {
 	Name string `json:"name"`
 	Email string `json:"email" binding:"required"`
@@ -7,15 +10,15 @@ type Svc struct {
 
 
 
-func (s *Svc) GetDataService(data Svc) Svc{
+func (s *DataService) GetDataService(data Svc) Svc{
 	return data
 }
 
-func (s *Svc) PostDataService(data Svc) Svc{
+func (s *DataService) PostDataService(data Svc) Svc{
 	return data
 }
 
-func (s *Svc) DeleteDataService(data Svc) Svc{
+func (s *DataService) DeleteDataService(data Svc) Svc{
 
 	return data
 
