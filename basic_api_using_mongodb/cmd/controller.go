@@ -85,6 +85,24 @@ func getMovieAll() []primitive.M {
 
 }
 
+func deleteMovie(id string){
+	movieID,err := primitive.ObjectIDFromHex(id)
+	if err!=nil{
+		log.Fatal(err)
+	}
+	filter := bson.M{"_id": movieID}
+	deleteCount,err := collections.DeleteOne(context.Background(),filter)
+	if err!=nil{
+		log.Fatal(err)
+	}
+	fmt.Println("Movie deleted with deletecount :",deleteCount)
+}
+
+func deleteAllMovies(){
+	filter := bson.D{{}}
+	collections.DeleteMany(context.Background(),filter,nil)
+}
+
 func toBsonM(data interface{}) (bson.M, error) {
 	// Marshal the struct to BSON bytes
 	bsonBytes, err := bson.Marshal(data)
@@ -124,4 +142,13 @@ func CreateMovie(w http.ResponseWriter, r *http.Request) {
 func UpdateMovie(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	updateMovie(params["id"], r)
+}
+
+func DeleteOneMovie(w http.ResponseWriter, r *http.Request){
+	params := mux.Vars(r)
+	deleteMovie(params["id"])
+}
+
+func DeleteAllMovies(w http.ResponseWriter, r *http.Request){
+	deleteAllMovies()
 }
