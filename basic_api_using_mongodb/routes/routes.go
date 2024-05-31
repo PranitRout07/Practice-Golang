@@ -11,5 +11,7 @@ func Route() *mux.Router {
 	r.HandleFunc("/movies",cmd.GetAllMovies).Methods("GET")
 	r.HandleFunc("/movies/{id}",cmd.UpdateMovie).Methods("PUT")
 	r.HandleFunc("/movies",cmd.CreateMovie).Methods("POST")
+	r.HandleFunc("/movies/{id}",cmd.DeleteOneMovie).Methods("DELETE")
+	r.HandleFunc("/movies/deleteall",cmd.DeleteAllMovies).Methods("DELETE")
 	return r 
 }
