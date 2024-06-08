@@ -6,19 +6,18 @@ import (
 	"log"
 	"net/http"
 	"net/smtp"
-	_"time"
+
 )
 
 type Details struct {
 	Pass    string   `json:"pass"`
 	From    string   `json:"from"`
 	To      []string `json:"to"`
-	Message []byte   `json:"msg"`
+	Message string   `json:"msg"`
 }
 
 func UserEmailData(w http.ResponseWriter, r *http.Request) {
 	var userDetails Details
-	// time.Sleep(time.Second*3)
 	json.NewDecoder(r.Body).Decode(&userDetails)
 	fmt.Println("DETAILS: ")
 	fmt.Println(userDetails)
@@ -31,7 +30,8 @@ func UserEmailData(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode("Email Sent Successfully!")
 }
-//Send mail 
+
+//Send mail
 
 func SendMail(d *Details) error {
 	// smtp server configuration.
@@ -43,9 +43,11 @@ func SendMail(d *Details) error {
 	auth := smtp.PlainAuth("", d.From, d.Pass, smtpHost)
 	fmt.Println(auth)
 
+	message := []byte(d.Message)
+
 	// Sending email.
 
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, d.From,d.To, d.Message)
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, d.From, d.To, message)
 	if err != nil {
 
 		return err
