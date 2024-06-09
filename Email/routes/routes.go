@@ -7,6 +7,8 @@ import (
 
 func Routes() *mux.Router {
 	r := mux.NewRouter()
+	r.HandleFunc("/datas",controllers.GetSendDetails).Methods("GET")
 	r.HandleFunc("/msg",controllers.UserEmailData).Methods("POST")
+	r.HandleFunc("/send",controllers.SendEmailDetails).Methods("GET")
 	return r
 }
