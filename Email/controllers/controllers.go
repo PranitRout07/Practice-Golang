@@ -19,7 +19,7 @@ type Details struct {
 }
 
 // Get data from html
-var html_file = "./statics/render.html"
+var html_file = "render.html"
 
 func SendEmailDetails(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles(html_file)
