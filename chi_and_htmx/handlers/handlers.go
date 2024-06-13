@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/initializers"
+	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/middlewares"
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/models"
 )
 
@@ -86,4 +87,28 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	log.Println(products)
+}
+
+func DetailHandler(w http.ResponseWriter, r *http.Request){
+	log.Println("Hello from detail handler")
+
+	// post := r.Context().Value(middlewares.PostsKey)
+	post, ok := r.Context().Value(middlewares.PostsKey).(models.Posts)
+	if !ok {
+		log.Println("No post found in context")
+		http.Error(w, "Post not found", http.StatusNotFound)
+		return
+	}
+
+	log.Println(post)
+	t, err := template.ParseFiles("templates/pages/details.html")
+	if err!=nil{
+		log.Fatal(err)
+	}
+	ctx := make(map[string]interface{})
+	ctx["posts"] = post
+	err = t.Execute(w, ctx)
+	if err!=nil{
+		log.Fatal(err)
+	}
 }

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+    <title>Posts</title>
 </head>
 <body>
     <div>
@@ -11,7 +12,8 @@
         <br>
         {{ range .posts }}
         <ul>
-            <li>{{ .Id }} - {{ .Title }} </li>
+            <button hx-get="/details/{{.Id}}" hx-target="#content" hx-swap="innerHTML"> {{ .Title }} </button>
+            <!-- <li>{{ .Id }} - {{ .Title }} </li> -->
         </ul>
         {{ end }}
     </div>
