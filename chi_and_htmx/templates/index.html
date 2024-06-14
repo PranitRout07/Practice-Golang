@@ -19,6 +19,19 @@
         <div id="content">
             <p><b>Empty</b></p>
         </div>
+
+
+        <br>
+        <div>
+            <form hx-post="/addposts"  hx-target="#content" hx-swap="outerHTML">
+
+                <label>Article:</label>
+                <br>
+                <input name="article" placeholder="article" class="border-2 border-black mt-2" />
+                <br>
+                <button class="p-2 mt-4 border-2 border-black" type="submit">Add</button>
+          </form>
+        </div>
     </div>
 </body>
 </html>

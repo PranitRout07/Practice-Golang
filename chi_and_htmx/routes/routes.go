@@ -23,7 +23,7 @@ func Routes() *chi.Mux {
 		log.Println("hello...")
 	})
 
-
+	routes.Post("/addposts",handlers.PostArticles)
 
 	return routes
 }
