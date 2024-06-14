@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/initializers"
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/middlewares"
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/models"
@@ -128,10 +129,13 @@ func PostArticles(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	if res!=nil{
+		ctx := make(map[string]interface{})
+		ctx["result"] = "Successfully added!"
 		t,_ := template.ParseFiles("templates/pages/responseForPost.html")
-		err := t.Execute(w,nil)
+		err := t.Execute(w,ctx)
 		if err!=nil{
 			log.Fatal(err)
 		}
+		
 	}
 }
