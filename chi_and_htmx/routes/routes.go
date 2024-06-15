@@ -20,9 +20,9 @@ func Routes() *chi.Mux {
 	routes.Route("/details/{id}", func(routes chi.Router) {
 		routes.Use(middlewares.PostCtx)
 		routes.Get("/", handlers.DetailHandler)
-		routes.Delete("/delete",handlers.DeleteArticles)
+		
 	})
-
+	routes.Delete("/details/{id}/delete",handlers.DeleteArticles)
 	routes.Post("/addposts",handlers.PostArticles)
 
 	return routes

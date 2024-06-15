@@ -10,6 +10,7 @@ import (
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/initializers"
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/middlewares"
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/models"
+	"github.com/go-chi/chi/v5"
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -119,7 +120,9 @@ func PostArticles(w http.ResponseWriter, r *http.Request) {
 
 	article := r.FormValue("article")
 
-	sqlQuery := fmt.Sprintf("INSERT INTO posts(title) VALUES ('%s');",article)
+	log.Println("Check duplicates: ", middlewares.CheckDuplicateDatas(article))
+
+	sqlQuery := fmt.Sprintf("INSERT INTO posts(title) VALUES ('%s');", article)
 
 	fmt.Println(sqlQuery)
 
@@ -128,46 +131,40 @@ func PostArticles(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
-	if res!=nil{
+
+	if res != nil {
 		ctx := make(map[string]interface{})
 		ctx["result"] = "Successfully added!"
-		t,_ := template.ParseFiles("templates/pages/responseForPost.html")
-		err := t.Execute(w,ctx)
-		if err!=nil{
+		t, _ := template.ParseFiles("templates/pages/responseForPost.html")
+		err := t.Execute(w, ctx)
+		if err != nil {
 			log.Fatal(err)
 		}
-		
+
 	}
 }
 
-func DeleteArticles(w http.ResponseWriter, r *http.Request){
+func DeleteArticles(w http.ResponseWriter, r *http.Request) {
 	log.Println("This is from delete handler.")
-	// r.
-	// post,ok := r.Context().Value(middlewares.PostCtx).(models.Posts)
-	// if !ok {
-	// 	log.Println("No post found in context")
-	// 	http.Error(w, "Post not found", http.StatusNotFound)
-	// 	return
-	// }
-	
-	id := middlewares.ID
-	log.Println("Delete id",id)
-	ID,_ := strconv.ParseInt(id,2,64)
-	sqlQuery := fmt.Sprintf("DELETE FROM posts WHERE id=%d;",ID)
-	res,err := initializers.DBConnection.Exec(sqlQuery)
 
-	log.Println("Print delete result",res)
-	if err!=nil{
+	id := chi.URLParam(r, "id")
+	log.Println("Delete id", id)
+	ID, _ := strconv.Atoi(id)
+
+	sqlQuery := "DELETE FROM posts WHERE id=$1;"
+	res, err := initializers.DBConnection.Exec(sqlQuery, ID)
+
+	log.Println("Print delete result", res)
+	if err != nil {
 		log.Fatal(err)
 	}
-	if res!=nil{
-		t,_ := template.ParseFiles("templates/pages/deletePosts.html")
-		err := t.Execute(w,nil)
-		if err!=nil{
+	if res != nil {
+		t, _ := template.ParseFiles("templates/pages/deletePosts.html")
+		err := t.Execute(w, nil)
+		if err != nil {
 			log.Fatal(err)
 		}
-		
+
 	}
-	
+
 }
