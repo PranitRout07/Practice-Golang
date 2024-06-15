@@ -5,17 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
     <title>Posts</title>
+    <link rel="stylesheet" href="/templates/style.css">
 </head>
 <body>
     <div>
-        <h1>Articles</h1>
-        <br>
-        {{ range .posts }}
-        <ul>
-            <button hx-get="/details/{{.Id}}" hx-target="#content" hx-swap="innerHTML"> {{ .Title }} </button>
-            <!-- <li>{{ .Id }} - {{ .Title }} </li> -->
-        </ul>
-        {{ end }}
+        <h1 class="text-indigo-700 mb-8">Articles</h1>
+        
+        
+        <div class="flex flex-wrap flex-col items-center justify-evenly w-screen">
+            {{ range .posts }}
+
+            <div class="bg-purple-200 hover:bg-purple-500 cursor-pointer rounded-2xl mt-8 mb-12 w-72 flex flex-col items-center" hx-get="/details/{{.Id}}" hx-target="#content" hx-swap="innerHTML" >
+                <p class="text-slate-950 font-bold">{{ .Id }}</p>
+                <p class="text-gray-600 font-semibold"> {{ .Title }} </p>
+            </div>
+
+            {{ end }}
+        </div>
+        
     </div>
 </body>
 </html>

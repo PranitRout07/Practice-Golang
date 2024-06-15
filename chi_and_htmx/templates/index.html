@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
     <title>Articles and Products</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/templates/style.css">
 
 </head>
-<body>
+<body class="bg-gray-900">
     
-    <div class="container mx-auto px-2">
-        <h1 class="text-center font-extrabold text-xl mt-8 mb-6" >Articles and Products</h1>
-        <button hx-target="#content" hx-get="/posts" hx-swap="innerHTML">Articles List</button>
-        <br>
-        <button hx-target="#content" hx-get="/products" hx-swap="innerHTML" >Products List</button>
-        <br>
-        <div id="content">
-            <p><b>Empty</b></p>
+    <!-- <div class="container mx-auto px-2"> -->
+        <div class="text-center font-extrabold text-5xl mt-0 mb-6 p-4 text-indigo-700 bg-slate-400 h-auto w-full" >Articles and Products
+        </div>
+
+
+        <div class="flex justify-center mt-10">
+            <button hx-target="#content" hx-get="/posts" hx-swap="innerHTML" class="cursor-pointer hover:font-bold font-semibold text-white bg-violet-600 p-1 rounded-3xl h-8 w-32 m-5">Articles List</button>
+            <br>
+            <button hx-target="#content" hx-get="/products" hx-swap="innerHTML" class="cursor-pointer hover:font-bold font-semibold text-white bg-violet-600 p-1 rounded-3xl h-8 w-32 m-5" >Products List</button>
+            <br>
+        </div>
+
+        <div id="content" class="text-center justify-center mt-12 text-2xl">
+            <p class="text-yellow-500"><b>Empty</b></p>
         </div>
 
 
@@ -32,6 +38,6 @@
                 <button class="p-2 mt-4 border-2 border-black" type="submit">Add</button>
           </form>
         </div>
-    </div>
+    <!-- </div> -->
 </body>
 </html>

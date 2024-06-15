@@ -18,7 +18,8 @@ func init() {
 func main() {
 	r := routes.Routes()
 	port := os.Getenv("port")
-
+	fs := http.FileServer(http.Dir("./templates"))
+	r.Handle("/templates/*", http.StripPrefix("/templates/", fs))	
 	log.Fatal(http.ListenAndServe(port, r))
 
 }

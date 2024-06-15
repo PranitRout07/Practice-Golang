@@ -14,13 +14,13 @@ import (
 type contextKey string
 
 const PostsKey contextKey = "posts"
-
+var ID string
 func PostCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var posts models.Posts
 		id := chi.URLParam(r, "id")
 		log.Println("URL parameter 'id':", id)
-
+		ID = id
 		if id := chi.URLParam(r, "id"); id != "" {
 			stmt := "select * from posts where id=$1"
 			log.Println(id, "hhhhhhh")
@@ -32,7 +32,7 @@ func PostCtx(next http.Handler) http.Handler {
 				log.Println("Error", err)
 			}
 		}
-
+		
 		ctx := context.WithValue(r.Context(), PostsKey, posts)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

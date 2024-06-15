@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"log"
+
 
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/handlers"
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/middlewares"
@@ -20,7 +20,7 @@ func Routes() *chi.Mux {
 	routes.Route("/details/{id}", func(routes chi.Router) {
 		routes.Use(middlewares.PostCtx)
 		routes.Get("/", handlers.DetailHandler)
-		log.Println("hello...")
+		routes.Delete("/delete",handlers.DeleteArticles)
 	})
 
 	routes.Post("/addposts",handlers.PostArticles)

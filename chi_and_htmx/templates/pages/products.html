@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
+    <link rel="stylesheet" href="/templates/style.css">
 </head>
 <body>
     <div>
-        <h1>Products</h1>
+        <h1 class="text-indigo-700 mb-8 ">Products</h1>
+        <div class="flex flex-col justify-evenly w-72 h-48">
         {{ range .products }}
-        <ul>
-            <li>
-                {{ .Id }} - {{ .ProductName }} - {{ .Price }}
-            </li>
-        </ul>
+        
+            <div class="p-10 m-1 bg-purple-200 rounded-2xl" >
+                <p class="text-slate-900">{{ .Id }}</p>
+                <p class="text-gray-600 ">{{ .ProductName }}</p>
+                <p class="text-gray-600 font-semibold">RS {{ .Price }}</p>
+            </div>
         {{ end }}
+    </div>
     </div>
     
 </body>

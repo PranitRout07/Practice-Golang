@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/initializers"
 	"github.com/PranitRout07/Practice-Golang/chi_and_htmx/middlewares"
@@ -138,4 +139,35 @@ func PostArticles(w http.ResponseWriter, r *http.Request) {
 		}
 		
 	}
+}
+
+func DeleteArticles(w http.ResponseWriter, r *http.Request){
+	log.Println("This is from delete handler.")
+	// r.
+	// post,ok := r.Context().Value(middlewares.PostCtx).(models.Posts)
+	// if !ok {
+	// 	log.Println("No post found in context")
+	// 	http.Error(w, "Post not found", http.StatusNotFound)
+	// 	return
+	// }
+	
+	id := middlewares.ID
+	log.Println("Delete id",id)
+	ID,_ := strconv.ParseInt(id,2,64)
+	sqlQuery := fmt.Sprintf("DELETE FROM posts WHERE id=%d;",ID)
+	res,err := initializers.DBConnection.Exec(sqlQuery)
+
+	log.Println("Print delete result",res)
+	if err!=nil{
+		log.Fatal(err)
+	}
+	if res!=nil{
+		t,_ := template.ParseFiles("templates/pages/deletePosts.html")
+		err := t.Execute(w,nil)
+		if err!=nil{
+			log.Fatal(err)
+		}
+		
+	}
+	
 }
