@@ -178,3 +178,32 @@ func DeleteArticles(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func UpdateData(w http.ResponseWriter, r *http.Request){
+
+	log.Println("This is from update handler.")
+	article := r.FormValue("article")
+	id := chi.URLParam(r, "id")
+	log.Println("Update id", id)
+	ID, _ := strconv.Atoi(id)
+
+	sqlQuery := fmt.Sprintf("UPDATE posts SET title = '%s' WHERE id=$1;",article)
+	res, err := initializers.DBConnection.Exec(sqlQuery, ID)
+
+	log.Println("Print update result", res)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if res != nil {
+		t, _ := template.ParseFiles("templates/pages/updatePosts.html")
+		err := t.Execute(w, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	}
+
+
+}
+
+

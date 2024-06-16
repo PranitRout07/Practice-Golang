@@ -24,6 +24,6 @@ func Routes() *chi.Mux {
 	})
 	routes.Delete("/details/{id}/delete",handlers.DeleteArticles)
 	routes.Post("/addposts",handlers.PostArticles)
-
+	routes.Put("/details/{id}/update",handlers.UpdateData)
 	return routes
 }
