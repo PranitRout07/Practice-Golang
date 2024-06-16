@@ -8,13 +8,15 @@ import (
 )
 
 func CheckDuplicateDatas(articleName string) (bool) {
+	var count int
 	sqlQuery := fmt.Sprintf("SELECT COUNT(*) FROM posts WHERE title = '%s';",articleName)
-	res, err := initializers.DBConnection.Exec(sqlQuery)
+	err := initializers.DBConnection.QueryRow(sqlQuery).Scan(&count)
 
-	log.Println("Print duplicate result", res)
+	// log.Println("Print duplicate result", res)
 	if err != nil {
 		log.Fatal(err)
 		return false
 	}
-	return true
+	log.Println("Count : ",count)
+	return count>=1
 }

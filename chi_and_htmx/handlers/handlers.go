@@ -120,7 +120,17 @@ func PostArticles(w http.ResponseWriter, r *http.Request) {
 
 	article := r.FormValue("article")
 
-	log.Println("Check duplicates: ", middlewares.CheckDuplicateDatas(article))
+	if middlewares.CheckDuplicateDatas(article){
+		
+		ctx := make(map[string]interface{})
+		ctx["result"] = "Data with same name is already present in the database. Please Use another name!"
+		t, _ := template.ParseFiles("templates/pages/responseForPost.html")
+		err := t.Execute(w, ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
 
 	sqlQuery := fmt.Sprintf("INSERT INTO posts(title) VALUES ('%s');", article)
 
