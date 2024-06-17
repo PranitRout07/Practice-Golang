@@ -28,14 +28,14 @@
 
 
         <br>
-        <div>
+        <div class="justify-center text-center">
             <form hx-post="/addposts"  hx-target="#content" hx-swap="innerHTML">
 
-                <label>Article:</label>
+                <label class="text-indigo-500 font-semibold hover:text-indigo-600 text-2xl">Enter an article title:</label>
                 <br>
-                <input name="article" placeholder="article" class="border-2 border-black mt-2" />
+                <input name="article" placeholder="article title" class="text-center p-3 bg-slate-200 border-2 border-solid border-gray-200 mt-2 rounded-xl" />
                 <br>
-                <button class="p-2 mt-4 border-2 border-black" type="submit">Add</button>
+                <button class="cursor-pointer hover:font-bold font-semibold text-white bg-violet-600 p-1 rounded-3xl h-8 w-32 m-5" type="submit">Add</button>
           </form>
         </div>
     <!-- </div> -->

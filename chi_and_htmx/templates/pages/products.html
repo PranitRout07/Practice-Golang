@@ -8,11 +8,11 @@
 </head>
 <body>
     <div>
-        <h1 class="text-indigo-700 mb-8 ">Products</h1>
-        <div class="flex flex-col justify-evenly w-72 h-48">
+        <h1 class="text-indigo-500 font-semibold hover:text-indigo-600 text-2xl">Products</h1>
+        <div class="flex flex-wrap items-center justify-evenly">
         {{ range .products }}
         
-            <div class="p-10 m-1 bg-purple-200 rounded-2xl" >
+            <div class="p-10 m-1 bg-purple-200 rounded-2xl mt-8 mb-12 w-72 " >
                 <p class="text-slate-900">{{ .Id }}</p>
                 <p class="text-gray-600 ">{{ .ProductName }}</p>
                 <p class="text-gray-600 font-semibold">RS {{ .Price }}</p>
