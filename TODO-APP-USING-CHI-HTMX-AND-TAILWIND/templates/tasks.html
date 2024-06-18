@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks</title>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+</head>
+<body  >
+    <div id="tasks-body">
+                <!-- Get the tasks -->
+                {{ range .tasks }}
+                <div class="bg-cyan-50 text-gray-800 text-2xl rounded-2xl cursor-pointer w-[450px] h-[70px] m-5 px-12 py-4 justify-evenly"> 
+                    {{ .TaskName }} - {{ .Status }} 
+                    <button hx-delete="/tasks/{{.ID}}/delete" hx-target="#tasks" hx-swap="innerHTML"> &#xf1f8;Del </button> 
+                    <button hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML"> &#xf044;Status </button>
+                </div>
+                <br>
+                {{ end }}
+    </div>
+</body>
+</html>
