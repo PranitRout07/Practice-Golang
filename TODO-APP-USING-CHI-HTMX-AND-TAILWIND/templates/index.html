@@ -12,26 +12,38 @@
     <nav>
         <p class="text-4xl bg-slate-300 text-center p-4 font-bold text-gray-900">TODO App</p>
     </nav>
-    <div class="justify-center p-40 mx-96 my-32 bg-indigo-300 border-solid border-black">
-        <div id="form" >
+    <div class="justify-center p-40 mx-96 my-24 bg-indigo-300 border-2 border-neutral-900">
+        <div id="form" class="bg-slate-400 p-6 border-2 border-slate-700" >
             <!-- Add tasks form -->
             <form class="justify-center text-center">
-                <input placeholder="add task" name="addtask" type="text" class="text-yellow-700 font-bold text-2xl px-10 py-4 mx-10 mt-10 bg-slate-200 text-center hover:cur">
-                
-                <button hx-post="/post" hx-target="#tasks" hx-swap="innerHTML" class="text-gray-800 font-bold text-2xl bg-indigo-200 justify-center mt-0 hover:bg-green-300 px-10 py-3"> Add New Task + </button>
+                <input placeholder="add task" name="addtask" type="text" class="text-yellow-700 font-bold text-2xl px-10 py-4 mx-10 mt-10 bg-slate-200 justify-center text-center">
+                <br>
+                <button hx-post="/post" hx-target="#tasks" hx-swap="innerHTML" class="text-gray-800 font-bold text-2xl bg-yellow-100 justify-center mt-4 hover:bg-green-200 px-10 py-3 rounded-3xl"> Add New Task + </button>
             </form>
         </div>
 
-        <div id="tasks" class="w-full flex flex-col justify-center text-center items-center">
+        <div id="tasks" class="w-full flex flex-col justify-center text-center items-center bg-slate-400 border-2 border-slate-700 mt-10">
             <!-- <button hx-get="/tasks" hx-target="#tasks" hx-swap="innerHTML">View Tasks</button> -->
+             <p class="text-2xl text-center p-4 font-bold text-gray-900 m-7"><u> Tasks and Its Current Status </u> </p>
+
+             <!-- <div class="flex flex-row">
+                 Tasks and status header 
+                 <p class="text-3xl text-amber-300 px-10 pt-2 pb-2">Tasks</p>
+                 <p class="text-3xl text-amber-300 px-10 pt-2 pb-2">Status</p>
+             </div> -->
+
+
+
             {{ range .tasks }}
-                <div class="bg-cyan-50 text-gray-800 text-2xl rounded-2xl cursor-pointer w-[450px] h-[70px] m-5 px-12 py-4 justify-evenly"> 
-                    {{ .TaskName }} - {{ .Status }} 
-                    <button hx-delete="/tasks/{{.ID}}/delete" hx-target="#tasks" hx-swap="innerHTML"> &#xf1f8;Del </button> 
-                    <button hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML"> &#xf044;Status </button>
-                </div>
-                <br>
-                {{ end }}
+            <div class="bg-cyan-50 text-gray-800 text-2xl rounded-2xl cursor-pointer w-[450px] h-[70px] m-5 px-12 py-4 justify-evenly"> 
+                {{ .TaskName }} - {{ .Status }} 
+                <button hx-delete="/tasks/{{.ID}}/delete" hx-target="#tasks" hx-swap="innerHTML"> &#xf1f8;Del </button> 
+                <button hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML"> &#xf044;Status </button>
+            </div>
+            <br>
+            {{ end }}
+            <br>
+
         </div>
         <br>
         <div>
