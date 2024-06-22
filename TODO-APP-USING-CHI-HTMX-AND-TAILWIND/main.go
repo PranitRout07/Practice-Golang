@@ -5,15 +5,16 @@ import (
 	"net/http"
 	"strconv"
 	"text/template"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
-	DB = append(DB, Task{1, "A Todo App", false})
-	DB = append(DB, Task{2, "CHI-Project", false})
-	DB = append(DB, Task{3, "Use HTMX", false})
+	DB = append(DB, Task{1422452552, "A Todo App", false})
+	DB = append(DB, Task{2322255562, "CHI-Project", false})
+	DB = append(DB, Task{3141455356, "Use HTMX", false})
 	router := chi.NewMux()
 	log.Println(middleware.Logger(router))
 	router.Get("/", HomeHandler)
@@ -95,8 +96,12 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	length := len(DB) + 1
-	DB = append(DB, Task{length, param, false})
+	length := int64(len(DB) + 1)
+
+	tm := time.Now()
+	
+	final_id := tm.UnixMicro() +length
+	DB = append(DB, Task{final_id, param, false})
 	
 	// ctx["status"] = "Added a new task successfully!"
 	ctx["tasks"] = DB
@@ -121,7 +126,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	var index int 
 	for i:=0;i<len(DB);i++{
-		if DB[i].ID == id {
+		if DB[i].ID == int64(id) {
 			index = i 
 		}
 	}
@@ -153,7 +158,7 @@ func UpdateStatusHandler(w http.ResponseWriter, r *http.Request){
 	
 
 	for i:=0;i<len(DB);i++{
-		if DB[i].ID == id{
+		if DB[i].ID == int64(id){
 			if !DB[i].Status{
 				DB[i].Status = true 
 				break
