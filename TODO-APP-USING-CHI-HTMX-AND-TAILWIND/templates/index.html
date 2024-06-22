@@ -7,47 +7,94 @@
     <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <link rel="stylesheet" href="templates/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="bg-slate-800" id="whole-body">
-    <nav>
-        <p class="text-4xl bg-slate-300 text-center p-4 font-bold text-gray-900">TODO App</p>
-    </nav>
-    <div class="justify-center p-40 mx-96 my-24 bg-indigo-300 border-2 border-neutral-900">
-        <div id="form" class="bg-slate-400 p-6 border-2 border-slate-700" >
-            <!-- Add tasks form -->
-            <form class="justify-center text-center">
-                <input placeholder="add task" name="addtask" type="text" class="text-yellow-700 font-bold text-2xl px-10 py-4 mx-10 mt-10 bg-slate-200 justify-center text-center">
-                <br>
-                <button hx-post="/post" hx-target="#tasks" hx-swap="innerHTML" class="text-gray-800 font-bold text-2xl bg-yellow-100 justify-center mt-4 hover:bg-green-200 px-10 py-3 rounded-3xl"> Add New Task + </button>
+<body class="bg-gradient-to-r from-violet-100 from-10% via-indigo-200 via-30% to-purple-300 to-90%" id="whole-body">
+    <!-- <nav class="text-4xl bg-slate-300 text-center p-4 font-bold text-gray-900 mb-20">
+        <p >TODO App</p>
+    </nav> -->
+    <div class="m-24 p-20 bg-gray-700 border-2 border-neutral-900">
+
+
+        <!-- Add tasks form -->
+        <div class="relative overflow-x-auto justify-center text-center mb-16" id="form">
+            
+            <form>
+                <div class="overflow-x-clip ">
+                    <input placeholder="add task" name="addtask" type="text" class="sm:h-15 h-18 sm:w-1/2 w-32 text-green-700 font-bold text-2xl px-10 py-4 m-5 bg-slate-200">
+                </div>
+                <div>
+                    <button hx-post="/post" hx-target="#tasks" hx-swap="innerHTML" class="text-gray-800 font-bold text-2xl bg-gradient-to-r from-green-200 to-blue-300 hover:from-red-400 hover:to-yellow-300 px-10 py-1 rounded-3xl"> Add New Task + </button>
+                
+                
+
+                </div>
             </form>
         </div>
 
-        <div id="tasks" class="w-full flex flex-col justify-center text-center items-center bg-slate-400 border-2 border-slate-700 mt-10">
-            <!-- <button hx-get="/tasks" hx-target="#tasks" hx-swap="innerHTML">View Tasks</button> -->
-             <p class="text-2xl text-center p-4 font-bold text-gray-900 m-7"><u> Tasks and Its Current Status </u> </p>
-
-             <!-- <div class="flex flex-row">
-                 Tasks and status header 
-                 <p class="text-3xl text-amber-300 px-10 pt-2 pb-2">Tasks</p>
-                 <p class="text-3xl text-amber-300 px-10 pt-2 pb-2">Status</p>
-             </div> -->
+        <!-- <p class="text-2xl text-center p-4 font-bold text-gray-900 m-7"><u> Tasks and Its Current Status </u> </p> -->
 
 
+<div>
+    <!-- Table starts here -->
+    <div class="relative overflow-x-auto" id="tasks">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Task Name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Status
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Delete
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Update
+                    </th>
+                </tr>
+            </thead>
+              
+            <tbody>
+                {{ range .tasks}}
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ .TaskName }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ .Status }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <button hx-delete="/tasks/{{.ID}}/delete" hx-target="#tasks" hx-swap="innerHTML" class=""> <i class="fa fa-trash-o" style="font-size:24px"></i> </button>
+                    </td>
+                    <td class="px-6 py-4">
+                        <!-- <button hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML" class=""> [Status] </button> -->
+                        <label  class="inline-flex items-center cursor-pointer">
+                            <input hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML" type="checkbox" value="" class="sr-only peer" {{ if .Status }}checked{{ end }}>
+                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"></span>
+                          </label>
+                    </td>
+                    
+                </tr>
+                {{ end }}
+                
+                
+            </tbody>
+            
+            
+        </table>
+    </div>
+</div>
 
-            {{ range .tasks }}
-            <div class="bg-cyan-50 text-gray-800 text-2xl rounded-2xl cursor-pointer w-[450px] h-[70px] m-5 px-12 py-4 justify-evenly"> 
-                {{ .TaskName }} - {{ .Status }} 
-                <button hx-delete="/tasks/{{.ID}}/delete" hx-target="#tasks" hx-swap="innerHTML"> &#xf1f8;Del </button> 
-                <button hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML"> &#xf044;Status </button>
-            </div>
-            <br>
-            {{ end }}
-            <br>
 
-        </div>
         <br>
-        <div>
-            <button hx-get="/" hx-target="#whole-body" hx-swap="innerHTML">Back</button>
+
+
+        <div class="justify-end text-end">
+            <button hx-get="/" hx-target="#whole-body" hx-swap="innerHTML" class="text-gray-800 font-bold text-2xl bg-gradient-to-r from-green-200 to-blue-300 hover:from-red-400 hover:to-yellow-300 px-10 py-1 rounded-3xl">Back</button>
         </div>
     </div>
 </body>

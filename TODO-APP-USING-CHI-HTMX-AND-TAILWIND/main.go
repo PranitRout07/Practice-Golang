@@ -63,9 +63,41 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 
 func PostHandler(w http.ResponseWriter, r *http.Request) {
 	param := r.FormValue("addtask")
+	ctx := make(map[string]interface{})
+
+	val := CheckDuplicateData(param)
+	if val{
+		t, err := template.ParseFiles("templates/duplicate.html")
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = t.Execute(w, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Println("Duplicate data not allwed!!")
+		return
+	}
+
+	val = CheckEmptyName(param)
+
+	if val{
+		t, err := template.ParseFiles("templates/empty.html")
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = t.Execute(w, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("empty string not allwed!!")
+		return
+	}
+
 	length := len(DB) + 1
 	DB = append(DB, Task{length, param, false})
-	ctx := make(map[string]interface{})
+	
 	// ctx["status"] = "Added a new task successfully!"
 	ctx["tasks"] = DB
 
@@ -143,4 +175,19 @@ func UpdateStatusHandler(w http.ResponseWriter, r *http.Request){
 		log.Fatal(err)
 	}
 	log.Println("After status update DB is:",DB)
+
+}
+
+
+func CheckDuplicateData(params string) bool {
+	for i:=0;i<len(DB);i++{
+		if DB[i].TaskName == params {
+			return true
+		}
+	}
+	return false
+}
+
+func CheckEmptyName(params string) bool{
+	return params==""
 }

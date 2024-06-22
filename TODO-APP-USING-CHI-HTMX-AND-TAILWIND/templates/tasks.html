@@ -5,18 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasks</title>
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <link rel="stylesheet" href="templates/style.css">
 </head>
 <body  >
-    <div id="tasks-body">
+
                 <!-- Get the tasks -->
-                {{ range .tasks }}
-                <div class="bg-cyan-50 text-gray-800 text-2xl rounded-2xl cursor-pointer w-[450px] h-[70px] m-5 px-12 py-4 justify-evenly"> 
-                    {{ .TaskName }} - {{ .Status }} 
-                    <button hx-delete="/tasks/{{.ID}}/delete" hx-target="#tasks" hx-swap="innerHTML"> &#xf1f8;Del </button> 
-                    <button hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML"> &#xf044;Status </button>
-                </div>
-                <br>
-                {{ end }}
-    </div>
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Task Name
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Status
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Delete
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Update
+                            </th>
+                        </tr>
+                    </thead>
+                      
+                    <tbody id="tasks">
+                        {{ range .tasks}}
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            
+                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ .TaskName }}
+                            </th>
+                            <td class="px-6 py-4">
+                                {{ .Status }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <button hx-delete="/tasks/{{.ID}}/delete" hx-target="#tasks" hx-swap="innerHTML" class=""><i class="fa fa-trash-o" style="font-size:24px"></i></button>
+                            </td>
+                            <td class="px-6 py-4">
+                                <!-- <button hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML" class=""> [Status] </button> -->
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input hx-put="/tasks/{{.ID}}/update" hx-target="#tasks" hx-swap="innerHTML" type="checkbox" value="" class="sr-only peer" {{ if .Status }}checked{{ end }}>
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"></span>
+                                  </label>
+                            </td>
+                            
+                        </tr>
+                        {{ end }}
+                        
+                        
+                    </tbody>
+                    
+                    
+                </table>
+                    
+                    
+                
+                
+
 </body>
 </html>
