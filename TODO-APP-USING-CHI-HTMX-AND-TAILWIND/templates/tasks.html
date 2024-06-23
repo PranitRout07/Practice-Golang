@@ -36,7 +36,11 @@
                                 {{ .TaskName }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ .Status }}
+                                {{ if eq .Status true}}
+                                <p><span style='font-size:20px;'>&#9989;</span></p>
+                                {{ else }}
+                                <p ><span style='font-size:20px;'>&#10060;</span></p>
+                                {{ end }}
                             </td>
                             <td class="px-6 py-4">
                                 <button hx-delete="/tasks/{{.ID}}/delete" hx-target="#tasks" hx-swap="innerHTML" class=""> <i class="fa fa-trash-o" style="font-size:24px"></i> </button>
