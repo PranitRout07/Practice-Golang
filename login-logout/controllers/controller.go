@@ -10,6 +10,7 @@ import (
 
 	"github.com/PranitRout07/Practice-Golang/login-logout/initializers"
 	"github.com/PranitRout07/Practice-Golang/login-logout/middlewares"
+	"github.com/PranitRout07/Practice-Golang/login-logout/models"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -46,18 +47,48 @@ func RegisterForm(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 }
+type TempDetail struct{
+	models.TempDetails
+}
 
-func Register(w http.ResponseWriter, r *http.Request) {
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-	log.Println(email, password)
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+func (s *TempDetail) Register(w http.ResponseWriter, r *http.Request) {
+	s.Email = r.FormValue("email")
+	s.Password = r.FormValue("password")
+	confirmpassword := r.FormValue("confirmpassword")
+
+	//verify if both passoword and confirm password same , if not return
+	if s.Password != confirmpassword{
+		w.Write([]byte("<h1>Password and confirm password is not matching!</h1>"))
+		log.Println("Password and confirm password is not matching")
+		return
+	}
+	//verify email
+	middlewares.VerifyEmail(s.Email)
+
+	t, _ := template.ParseFiles("templates/otp.html")
+	err := t.Execute(w, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+
+}
+
+func (s *TempDetail) RegisterAfterOTPConfirmation(w http.ResponseWriter, r *http.Request) {
+	otp := middlewares.OTP
+	otpFromBody := r.FormValue("otp")
+
+	if otp != otpFromBody {
+		log.Println("Otp is not matching")
+		return
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(s.Password), 10)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	sqlQuery := fmt.Sprintf("INSERT INTO person(email,password) VALUES ('%s','%s');", email, string(hash))
+	sqlQuery := fmt.Sprintf("INSERT INTO person(email,password) VALUES ('%s','%s');", s.Email, string(hash))
 
 	fmt.Println(sqlQuery)
 
@@ -77,7 +108,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -105,12 +135,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	query := "SELECT password, id FROM person WHERE email = $1"
 	err = initializers.DBConnection.QueryRow(query, email).Scan(&passwordFromDB, &idFromDB)
 
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(passwordFromDB,password)
+	fmt.Println(passwordFromDB, password)
 	err = bcrypt.CompareHashAndPassword([]byte(passwordFromDB), []byte(password))
 	if err != nil {
 		log.Println("Incorrect password")
@@ -126,63 +155,61 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Sign and get the complete encoded token as a string using the secret
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 
-	if err!=nil{
-		log.Println("Error while creating the jwt token",err)
+	if err != nil {
+		log.Println("Error while creating the jwt token", err)
 	}
-	log.Println("TOKEN:",tokenString)
-	http.SetCookie(w,&http.Cookie{
-		Name:"Authorization",
-		Value: tokenString,
-		Expires: time.Now().Add(time.Hour * 24 * 30) , 
+	log.Println("TOKEN:", tokenString)
+	http.SetCookie(w, &http.Cookie{
+		Name:     "Authorization",
+		Value:    tokenString,
+		Expires:  time.Now().Add(time.Hour * 24 * 30),
 		SameSite: http.SameSiteLaxMode,
 	})
-
 
 	t, err := template.ParseFiles("templates/responseForLogin.html")
-	if err!=nil{
+	if err != nil {
 		log.Fatal(err)
 	}
-	err = t.Execute(w,nil)
-	if err!=nil{
+	err = t.Execute(w, nil)
+	if err != nil {
 		log.Fatal(err)
 	}
 
 }
 
+func Logout(w http.ResponseWriter, r *http.Request) {
 
-func Logout(w http.ResponseWriter, r *http.Request){
-
-	http.SetCookie(w,&http.Cookie{
-		Name:"Authorization",
-		Value: "",
-		Expires: time.Now().Add(0) , 
+	http.SetCookie(w, &http.Cookie{
+		Name:     "Authorization",
+		Value:    "",
+		Expires:  time.Now().Add(0),
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	t,err := template.ParseFiles("templates/logout.html")
-	if err!=nil{
+	t, err := template.ParseFiles("templates/logout.html")
+	if err != nil {
 		log.Fatal(err)
 	}
-	err = t.Execute(w,nil)
-	if err!=nil{
+	err = t.Execute(w, nil)
+	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func GetContent(w http.ResponseWriter,r *http.Request){
-	val := middlewares.Validate(w,r)
-	if !val{
+func GetContent(w http.ResponseWriter, r *http.Request) {
+	val := middlewares.Validate(w, r)
+	if !val {
 		log.Println("You are not authorized!Please login to continue seeing the content.")
 		w.Write([]byte("You are not authorized!Please login to continue seeing the content."))
 		return
 	}
 
-	t,err := template.ParseFiles("templates/showContent.html")
-	if err!=nil{
+	t, err := template.ParseFiles("templates/showContent.html")
+	if err != nil {
 		log.Fatal(err)
 	}
-	err = t.Execute(w,nil)
-	if err!=nil{
+	err = t.Execute(w, nil)
+	if err != nil {
 		log.Fatal(err)
 	}
 }

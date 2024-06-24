@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate OTP</title>
+</head>
+<body>
+    <div>
+        <form hx-post="/otp" hx-target="#details" hx-swap="innerHTML">
+            <input type="text" placeholder="otp" name="otp">
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+</body>
+</html>
