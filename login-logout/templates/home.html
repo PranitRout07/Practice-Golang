@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+</head>
+<body id="whole-body">
+
+    <button hx-get="/loginform" hx-target="#details" hx-swap="innerHTML">Login</button>
+    <br>
+    <button hx-get="/registerform" hx-target="#details" hx-swap="innerHTML">Register</button>
+    <br>
+    <div id="details">
+        <h3>This will replaced by a form</h3>
+    </div>
+    <br>
+    <div>
+        <button hx-get="/content" hx-target="#details" hx-swap="innerHTML">View details</button>
+    </div>
+    <br>
+    <div>
+        <button hx-get="/" hx-target="#whole-body" hx-swap="innerHTML"> Back </button>
+    </div>
+
+</body>
+</html>
