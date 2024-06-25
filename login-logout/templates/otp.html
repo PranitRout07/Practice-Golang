@@ -6,11 +6,14 @@
     <title>Generate OTP</title>
 </head>
 <body>
-    <div>
+    <div >
         <form hx-post="/otp" hx-target="#details" hx-swap="innerHTML">
             <input type="text" placeholder="otp" name="otp">
             <button type="submit">Confirm</button>
         </form>
+    </div>
+    <div id="timer" hx-get="/check-otp" hx-trigger="load, every 1s" hx-target="#timer" hx-swap="innerHTML">12 seconds remaining</div>
+    <div id="temp" hx-get="/registerform" hx-trigger="load delay:15s" hx-target="#details" hx-swap="innerHTML">
     </div>
 </body>
 </html>

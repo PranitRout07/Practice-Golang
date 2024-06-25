@@ -21,6 +21,7 @@ func Routes() *chi.Mux {
 	router.Post("/logout", controllers.Logout)
 	router.Get("/content", controllers.GetContent)
 	router.Post("/otp",tempDetailsHandler.RegisterAfterOTPConfirmation)
+	router.Get("/check-otp", controllers.CheckOTPTime)
 	return router
 
 }
