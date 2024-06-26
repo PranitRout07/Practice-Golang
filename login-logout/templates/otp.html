@@ -11,9 +11,27 @@
             <input type="text" placeholder="otp" name="otp">
             <button type="submit">Confirm</button>
         </form>
+        <div id="sent" hx-post="/resendotp" hx-trigger="click" hx-target="#sent" hx-swap="innerHTML" hx-headers='{"HX-Trigger": "reset-timer"}'>
+        <button >Resend</button>
+        </div>
     </div>
-    <div id="timer" hx-get="/check-otp" hx-trigger="load, every 1s" hx-target="#timer" hx-swap="innerHTML">12 seconds remaining</div>
-    <div id="temp" hx-get="/registerform" hx-trigger="load delay:15s" hx-target="#details" hx-swap="innerHTML">
-    </div>
+
+    <script>
+        document.addEventListener('htmx:afterSwap', function(event) {
+            // Extract number from the updated content
+            let timerContent = event.detail.target.innerHTML;
+            let remainingTime = parseInt(timerContent.match(/\d+/)[0], 10);
+            
+            // Update hx-target dynamically based on remainingTime
+            let targetId = remainingTime > 0 ? '{{ .beforefifteenseconds }}' : '{{ .afterfifteenseconds }}';
+            document.getElementById('timer').setAttribute('hx-target', '#' + targetId);
+        });
+    </script>
+
+    <div id="timer" hx-get="/check-otp" hx-trigger="load, every 1s" hx-target="#timer" hx-swap="innerHTML">15 seconds remaining</div>
+    <!-- <div id="temp" hx-get="/registerform" hx-trigger="reset-timer delay:15s, click delay:15s from:#sent"  hx-target="#details" hx-swap="innerHTML">
+    </div> -->
+
+
 </body>
 </html>

@@ -47,13 +47,16 @@ func RegisterForm(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 }
-type TempDetail struct{
+
+type TempDetail struct {
 	models.TempDetails
 	otpGeneratedTime time.Time
 }
+
 var OTPMaxTime = 15 * time.Second
 var currentTempDetails *TempDetail
 
+// var remainingTime *time.Duration
 
 func (s *TempDetail) Register(w http.ResponseWriter, r *http.Request) {
 	s.Email = r.FormValue("email")
@@ -61,7 +64,7 @@ func (s *TempDetail) Register(w http.ResponseWriter, r *http.Request) {
 	confirmpassword := r.FormValue("confirmpassword")
 
 	//verify if both passoword and confirm password same , if not return
-	if s.Password != confirmpassword{
+	if s.Password != confirmpassword {
 		w.Write([]byte("<h1>Password and confirm password is not matching!</h1>"))
 		log.Println("Password and confirm password is not matching")
 		return
@@ -71,39 +74,40 @@ func (s *TempDetail) Register(w http.ResponseWriter, r *http.Request) {
 	//start the otp timer
 	s.otpGeneratedTime = time.Now()
 	currentTempDetails = s
-	
+
+	ctx := make(map[string]interface{})
+	ctx["afterfifteenseconds"] = "details"
+	ctx["beforefifteenseconds"] = "timer"
 
 	t, _ := template.ParseFiles("templates/otp.html")
-	err := t.Execute(w, nil)
+	err := t.Execute(w, ctx)
 	if err != nil {
 		log.Fatal(err)
-	}	
-
-
-		
+	}
 
 }
 
-func CheckOTPTime(w http.ResponseWriter, r *http.Request){
-    if currentTempDetails == nil {
-        // http.Redirect(w, r, "/registerform", http.StatusSeeOther)
-        return
-    }
-
-    remainingTime := OTPMaxTime - time.Since(currentTempDetails.otpGeneratedTime)
-    if remainingTime <= 0 {
+func CheckOTPTime(w http.ResponseWriter, r *http.Request) {
+	if currentTempDetails == nil {
+		// http.Redirect(w, r, "/registerform", http.StatusSeeOther)
+		return
+	}
+	log.Println("CurrentTemp Details time", time.Since(currentTempDetails.otpGeneratedTime))
+	remainingTime := OTPMaxTime - time.Since(currentTempDetails.otpGeneratedTime)
+	log.Println("timeremaining:", remainingTime)
+	if remainingTime <= 0 {
 		middlewares.OTP = ""
+
 		t, _ := template.ParseFiles("templates/timeout.html")
 		err := t.Execute(w, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
-        return
-    }
-	
-
-    responseHTML := fmt.Sprintf(`<div id="timer">%d seconds remaining</div>`, int(remainingTime.Seconds()))
-    w.Write([]byte(responseHTML)) 
+		return
+	}
+	rT := int(remainingTime.Seconds())
+	responseHTML := fmt.Sprintf(`<div>%d seconds remaining</div>`, rT)
+	w.Write([]byte(responseHTML))
 }
 
 func (s *TempDetail) RegisterAfterOTPConfirmation(w http.ResponseWriter, r *http.Request) {
@@ -239,6 +243,23 @@ func GetContent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t, err := template.ParseFiles("templates/showContent.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = t.Execute(w, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (s *TempDetail) Resend(w http.ResponseWriter, r *http.Request) {
+
+	middlewares.OTP = ""
+	middlewares.VerifyEmail(s.Email)
+	s.otpGeneratedTime = time.Now()
+	w.Header().Set("HX-Trigger", "reset-timer")
+	currentTempDetails = s
+	t, err := template.ParseFiles("templates/sent.html")
 	if err != nil {
 		log.Fatal(err)
 	}
