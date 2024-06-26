@@ -22,7 +22,7 @@
             let timerContent = event.detail.target.innerHTML;
             let remainingTime = parseInt(timerContent.match(/\d+/)[0], 10);
             
-            // Update hx-target dynamically based on remainingTime
+            // Update hx-target dynamically based on remainingTime and use the information passed through context
             let targetId = remainingTime > 0 ? '{{ .beforefifteenseconds }}' : '{{ .afterfifteenseconds }}';
             document.getElementById('timer').setAttribute('hx-target', '#' + targetId);
         });
