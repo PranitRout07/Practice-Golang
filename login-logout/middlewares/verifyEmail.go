@@ -13,7 +13,7 @@ func VerifyEmail(email string) string{
 	OTP=""
 	pass := os.Getenv("pass")
 	//company mail
-	from := "pranitrout72@gmail.com"
+	from := os.Getenv("email")
 	fmt.Println(pass)
 
 	to := []string{email}

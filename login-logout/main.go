@@ -12,6 +12,7 @@ import (
 func init() {
 	initializers.LoadEnvVariables()
 	initializers.ConnectDB()
+	// initializers.Create_table()
 }
 func main() {
 	r := routes.Routes()

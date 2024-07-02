@@ -118,6 +118,7 @@ func (s *TempDetail) RegisterAfterOTPConfirmation(w http.ResponseWriter, r *http
 
 	if otp != otpFromBody {
 		log.Println("Otp is not matching")
+		
 		return
 	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(s.Password), 10)
