@@ -37,5 +37,4 @@ func main() {
 	}(wg, mych)
 
 	wg.Wait()
-
 }
