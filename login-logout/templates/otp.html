@@ -4,16 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generate OTP</title>
+    <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
 </head>
 <body>
-    <div >
+    <div>
         <form hx-post="/otp" hx-target="#details" hx-swap="innerHTML">
             <input type="text" placeholder="otp" name="otp">
             <button type="submit">Confirm</button>
         </form>
         <div id="sent" hx-post="/resendotp" hx-trigger="click" hx-target="#sent" hx-swap="innerHTML" hx-headers='{"HX-Trigger": "reset-timer"}'>
-        <button >Resend</button>
+            <button>Resend</button>
         </div>
+    </div>
+
+    <div id="timer" hx-get="/check-otp" hx-trigger="load, every 1s" hx-target="#timer" hx-swap="innerHTML">15 seconds remaining</div>
+
+    <div id="details">
+        <!-- This is where the details will be updated after form submission -->
     </div>
 
     <script>
@@ -22,16 +29,11 @@
             let timerContent = event.detail.target.innerHTML;
             let remainingTime = parseInt(timerContent.match(/\d+/)[0], 10);
             
-            // Update hx-target dynamically based on remainingTime and use the information passed through context
-            let targetId = remainingTime > 0 ? '{{ .beforefifteenseconds }}' : '{{ .afterfifteenseconds }}';
-            document.getElementById('timer').setAttribute('hx-target', '#' + targetId);
+            if (remainingTime <= 0) {
+                // Refresh the page or perform any other action when timer expires
+                location.reload();
+            }
         });
     </script>
-
-    <div id="timer" hx-get="/check-otp" hx-trigger="load, every 1s" hx-target="#timer" hx-swap="innerHTML">15 seconds remaining</div>
-    <!-- <div id="temp" hx-get="/registerform" hx-trigger="reset-timer delay:15s, click delay:15s from:#sent"  hx-target="#details" hx-swap="innerHTML">
-    </div> -->
-
-
 </body>
 </html>
