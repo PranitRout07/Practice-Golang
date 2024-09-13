@@ -3,16 +3,19 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 
-	"gorm.io/driver/sqlite"
+	"github.com/gin-gonic/gin"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
+var db *gorm.DB
 
 type Post struct {
 	gorm.Model
-	Title string
-	Slug  string `gorm:"uniqueIndex"`
-	Likes int
+	Title string `json:"title"`
+	Slug  string `json:"slug" gorm:"uniqueIndex"`
+	Likes int		`json:"likes"`
 }
 
 func (p *Post) String() string {
@@ -26,18 +29,41 @@ func main() {
 	}
 
 	db.AutoMigrate(&Post{})
+	log.Println("DB created...")
+	r := gin.Default()
+	r.POST("/post",func( c *gin.Context){
+		var posts Post
+		err := c.ShouldBindJSON(&posts)
+		if err!=nil{
+			log.Println("Error while posting::",err)
+			c.JSON(http.StatusBadRequest,gin.H{"message":err})
+		}
 
-	post, err := createPost(db, "The Short Story", "slug")
-	if err != nil {
-		log.Fatal("Failed to create post: ", err)
-	}
-	fmt.Println(post)
+		_,err = createPost(db,posts.Title,posts.Slug)
+		if err != nil {
+			log.Fatal("Failed to create post: ", err)
+		}
+		c.JSON(http.StatusOK,gin.H{"message":"Successfully created a new post."})
+	})
 
-	retrievedPost, err := getPostBySlug(db, "new-slug")
-	if err != nil {
-		log.Fatal("Failed to retrieve post: ", err)
+	
+
+	r.GET("/data/:id",func(c *gin.Context){
+		id := c.Param("id")
+		retrievedPost, err := getPostBySlug(db, id)
+		if err != nil {
+			log.Fatal("Failed to retrieve post: ", err)
+		}
+		c.JSON(http.StatusOK,gin.H{"message":retrievedPost})
+		fmt.Println(retrievedPost)
+	})
+
+	log.Println("Listening in port 4000...")
+	err = http.ListenAndServe(":4000",r)
+	if err!=nil{
+		log.Println("Error while starting the server!")
 	}
-	fmt.Println(retrievedPost)
+
 }
 
 func createPost(db *gorm.DB, title, slug string) (*Post, error) {
