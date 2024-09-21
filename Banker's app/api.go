@@ -49,10 +49,10 @@ func NewAPIServer(listerAddr string,store Storage) *APIServer {
 func (s *APIServer) Run() {
 	router := mux.NewRouter()
 	log.Println("Running on port:", s.listenAddr)
-	router.HandleFunc("/account", makeHandleFunc(s.handleAccount))
-	router.HandleFunc("/account/{id}",withJWTAuth(makeHandleFunc(s.handleAccountByID)))
-	router.HandleFunc("/transfer",makeHandleFunc(s.handleTransfer))
-	router.HandleFunc("/login",makeHandleFunc(s.handleLogin))
+	router.HandleFunc("/api/account", makeHandleFunc(s.handleAccount))
+	router.HandleFunc("/api/account/{id}",withJWTAuth(makeHandleFunc(s.handleAccountByID)))
+	router.HandleFunc("/api/transfer",makeHandleFunc(s.handleTransfer))
+	router.HandleFunc("/api/login",makeHandleFunc(s.handleLogin))
 	http.ListenAndServe(s.listenAddr, router)
 }
 
@@ -86,15 +86,15 @@ func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) 
 		return err 
 	}
 
-	tokenStr,err := createJWT(a)
-	fmt.Println(tokenStr,"token")
-	if err!=nil{
-		return err
-	}
+	// tokenStr,err := createJWT(a)
+	// fmt.Println(tokenStr,"token")
+	// if err!=nil{
+	// 	return err
+	// }
 
 	
 	r.Body.Close()
-	return WriteJSON(w, http.StatusOK, a)
+	return WriteJSON(w, http.StatusOK, "Account created")
 }
 
 func (s *APIServer) handleDeleteAccount(w http.ResponseWriter, r *http.Request) error {
@@ -147,19 +147,30 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request)error{
 	var req LoginReq
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err!=nil{
+		
 		return err 
 	}
 	acc,err := s.store.GetAccountByEmail(req.Email)
 	if err!=nil{
+		
 		return err 
 	}
+	
+	// fmt.Println(acc)
+	fmt.Println(acc.ID,acc.FirstName,acc.LastName,acc.Password,acc.Number,acc.Balance,acc.CreatedAt,req.Password)
+	fmt.Println("password",bcrypt.CompareHashAndPassword([]byte(acc.Password), []byte(req.Password)))
 	err = bcrypt.CompareHashAndPassword([]byte(acc.Password), []byte(req.Password))
 	if err!=nil{
 		return fmt.Errorf("email or password is wrong")
 	}
 
+	token,err := createJWT(acc)
+	if err!=nil{
+		return fmt.Errorf("something went wrong")
+	}
 
-	// token,err := createJWT(acc)
+	WriteJSON(w,http.StatusOK,token)
+	
 	
 	return nil
 

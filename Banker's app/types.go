@@ -28,7 +28,7 @@ type AccountReq struct {
 type Account struct {
 	ID        string    `json:"id"`
 	Email     string    `json:"email"`
-	Password  string    `json:"-"`
+	Password  string    `json:"password"`
 	FirstName string    `json:"first_name"`
 	LastName  string    `json:"last_name"`
 	Number    uint64    `json:"number"`
