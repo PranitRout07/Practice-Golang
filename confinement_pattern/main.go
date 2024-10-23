@@ -74,8 +74,7 @@ func process(wg *sync.WaitGroup,ele *int , val int){
 
 func main (){
 	arr := []int{1, 2, 3, 4, 5}
-	res := make([]int,len(arr)) 
-	fmt.Println()
+	res := make([]int,len(arr))  
 	wg := &sync.WaitGroup{}
 	now := time.Now()
 	for i,val := range arr{
