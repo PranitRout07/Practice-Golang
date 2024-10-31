@@ -1,0 +1,14 @@
+syntax = "proto3";
+option go_package = "github.com/PranitRout07/grpc";
+
+message HelloReq {
+    string msgReq = 1;
+}
+
+message HelloRes {
+    string msgRes = 1;
+}
+
+service Test{
+    rpc Chat(HelloReq)returns (HelloRes){};
+}
