@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "github.com/PranitRout07/grpc";
+
+message numbers {
+    float num1 = 1;
+    float num2 = 2;
+}
+
+message result {
+    float num = 1;
+}
+
+service Operations{
+    rpc Add(numbers) returns (result){};
+    rpc Sub(numbers) returns (result){};
+    rpc Mul(numbers) returns (result){};
+    rpc Div(numbers) returns (result){};
+}
